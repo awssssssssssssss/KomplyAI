@@ -40,26 +40,46 @@ export default function Dashboard() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
           <div className="bg-white rounded-lg shadow p-6">
             <h3 className="text-lg font-medium text-gray-900 mb-2">Data Sources</h3>
-            <p className="text-3xl font-bold text-blue-600">12</p>
+            <p className="text-3xl font-bold text-blue-600">4</p>
             <p className="text-gray-600">Connected sources</p>
+            <div className="mt-2 flex items-center text-sm text-gray-500">
+              <span className="text-green-500">3 active</span>
+              <span className="mx-1">•</span>
+              <span className="text-red-500">1 inactive</span>
+            </div>
           </div>
           
           <div className="bg-white rounded-lg shadow p-6">
             <h3 className="text-lg font-medium text-gray-900 mb-2">Data Assets</h3>
-            <p className="text-3xl font-bold text-green-600">142</p>
+            <p className="text-3xl font-bold text-green-600">5</p>
             <p className="text-gray-600">Identified assets</p>
+            <div className="mt-2 flex items-center text-sm text-gray-500">
+              <span className="text-blue-500">3 personal</span>
+              <span className="mx-1">•</span>
+              <span className="text-yellow-500">1 financial</span>
+              <span className="mx-1">•</span>
+              <span className="text-red-500">1 sensitive</span>
+            </div>
           </div>
           
           <div className="bg-white rounded-lg shadow p-6">
             <h3 className="text-lg font-medium text-gray-900 mb-2">Pending Requests</h3>
-            <p className="text-3xl font-bold text-yellow-600">3</p>
+            <p className="text-3xl font-bold text-yellow-600">2</p>
             <p className="text-gray-600">DSR requests</p>
+            <div className="mt-2 flex items-center text-sm text-gray-500">
+              <span className="text-green-500">1 access</span>
+              <span className="mx-1">•</span>
+              <span className="text-blue-500">1 deletion</span>
+            </div>
           </div>
           
           <div className="bg-white rounded-lg shadow p-6">
             <h3 className="text-lg font-medium text-gray-900 mb-2">Compliance Score</h3>
-            <p className="text-3xl font-bold text-purple-600">87%</p>
+            <p className="text-3xl font-bold text-purple-600">78%</p>
             <p className="text-gray-600">GDPR/CCPA</p>
+            <div className="mt-2 flex items-center text-sm text-gray-500">
+              <span className="text-green-500">+2% this month</span>
+            </div>
           </div>
         </div>
         
@@ -78,7 +98,7 @@ export default function Dashboard() {
                   </div>
                   <div className="ml-3">
                     <p className="text-sm font-medium text-gray-900">New data source connected</p>
-                    <p className="text-sm text-gray-600">Customer database connected successfully</p>
+                    <p className="text-sm text-gray-600">Payment Processing API connected successfully</p>
                     <p className="text-xs text-gray-500">2 hours ago</p>
                   </div>
                 </li>
@@ -89,8 +109,8 @@ export default function Dashboard() {
                     </div>
                   </div>
                   <div className="ml-3">
-                    <p className="text-sm font-medium text-gray-900">Consent updated</p>
-                    <p className="text-sm text-gray-600">Marketing consent preferences updated for 1,240 users</p>
+                    <p className="text-sm font-medium text-gray-900">Data classified</p>
+                    <p className="text-sm text-gray-600">5 data assets classified with 95% average confidence</p>
                     <p className="text-xs text-gray-500">5 hours ago</p>
                   </div>
                 </li>
@@ -102,8 +122,20 @@ export default function Dashboard() {
                   </div>
                   <div className="ml-3">
                     <p className="text-sm font-medium text-gray-900">Compliance alert</p>
-                    <p className="text-sm text-gray-600">Data retention policy needs review</p>
+                    <p className="text-sm text-gray-600">Employee Data asset requires review</p>
                     <p className="text-xs text-gray-500">1 day ago</p>
+                  </div>
+                </li>
+                <li className="flex items-start">
+                  <div className="flex-shrink-0">
+                    <div className="flex items-center justify-center w-8 h-8 rounded-full bg-purple-100">
+                      <span className="text-purple-600">🔄</span>
+                    </div>
+                  </div>
+                  <div className="ml-3">
+                    <p className="text-sm font-medium text-gray-900">Data flow updated</p>
+                    <p className="text-sm text-gray-600">Real-time payment data integration established</p>
+                    <p className="text-xs text-gray-500">2 days ago</p>
                   </div>
                 </li>
               </ul>

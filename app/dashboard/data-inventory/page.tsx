@@ -82,18 +82,35 @@ export default function DataInventoryDashboard() {
             <h3 className="text-lg font-medium text-gray-900 mb-2">Data Sources</h3>
             <p className="text-3xl font-bold text-blue-600">{dataSources.length}</p>
             <p className="text-gray-600">Connected sources</p>
+            <div className="mt-2 flex items-center text-sm text-gray-500">
+              <span className="text-green-500">2 active</span>
+              <span className="mx-1">•</span>
+              <span className="text-red-500">1 inactive</span>
+            </div>
           </div>
           
           <div className="bg-white rounded-lg shadow p-6">
             <h3 className="text-lg font-medium text-gray-900 mb-2">Data Assets</h3>
             <p className="text-3xl font-bold text-green-600">{dataAssets.length}</p>
             <p className="text-gray-600">Identified assets</p>
+            <div className="mt-2 flex items-center text-sm text-gray-500">
+              <span className="text-blue-500">3 personal</span>
+              <span className="mx-1">•</span>
+              <span className="text-yellow-500">1 financial</span>
+              <span className="mx-1">•</span>
+              <span className="text-red-500">1 sensitive</span>
+            </div>
           </div>
           
           <div className="bg-white rounded-lg shadow p-6">
             <h3 className="text-lg font-medium text-gray-900 mb-2">Data Flows</h3>
             <p className="text-3xl font-bold text-purple-600">{dataFlows.length}</p>
             <p className="text-gray-600">Active flows</p>
+            <div className="mt-2 flex items-center text-sm text-gray-500">
+              <span className="text-green-500">3 real-time</span>
+              <span className="mx-1">•</span>
+              <span className="text-blue-500">1 batch</span>
+            </div>
           </div>
         </div>
       )}

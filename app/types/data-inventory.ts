@@ -54,6 +54,19 @@ export interface DataFlow {
   updated_at: string;
 }
 
+export interface AuditLog {
+  id: string;
+  action: 'CREATE' | 'UPDATE' | 'DELETE' | 'CLASSIFY' | 'SCAN' | 'EXPORT' | 'IMPORT';
+  entity_type: 'DataSource' | 'DataAsset' | 'DataClassification' | 'DataFlow' | 'Policy' | 'Consent';
+  entity_id: string;
+  user_id: string;
+  organization_id: string;
+  details?: Record<string, any>;
+  ip_address?: string;
+  user_agent?: string;
+  created_at: string;
+}
+
 // Request/Response Types
 
 export interface CreateDataSourceRequest {
