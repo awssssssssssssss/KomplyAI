@@ -137,13 +137,30 @@ export async function GET(request: NextRequest) {
 
 ### Supabase Client
 ```typescript
-// lib/supabase/client.ts
-import { createClient } from '@supabase/supabase-js';
+// lib/db.ts
+// Mock Supabase client for local development
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
+export const supabase = {
+  from: (table: string) => ({
+    select: (fields: string = '*') => ({
+      eq: (column: string, value: any) => ({
+        single: async () => ({ data: getMockData(table)[0], error: null }),
+        // For data_processes table which returns array
+      }),
+      // For data_processes table which returns array directly
+    }),
+    insert: (data: any) => ({
+      select: () => ({
+        single: async () => ({ data: { ...data, id: 'mock-id' }, error: null }),
+      }),
+    }),
+  }),
+};
 
-export const supabase = createClient(supabaseUrl, supabaseAnonKey);
+// Mock data generation functions
+function getMockData(table: string) {
+  // Implementation details...
+}
 ```
 
 ### Type Safety
@@ -153,28 +170,48 @@ export const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
 ## AI Integration
 
-### DeepSeek API Usage
+### AI Service Mocks
 ```typescript
-// lib/ai/deepseek.ts
-import { DeepSeek } from 'deepseek';
+// lib/ai.ts
+// Mock AI service for local development
 
-const deepseek = new DeepSeek({
-  apiKey: process.env.DEEPSEEK_API_KEY,
-});
+export const aiService = {
+  generatePrivacyPolicy: async (organization: any, dataProcesses: any[]) => {
+    // Mock implementation that returns sample privacy policy
+    return `Sample Privacy Policy for ${organization.name}`;
+  },
+  
+  analyzeCompliance: async (organization: any, dataProcesses: any[]) => {
+    // Mock implementation that returns sample compliance analysis
+    return {
+      score: 85,
+      recommendations: ['Recommendation 1', 'Recommendation 2'],
+      risks: ['Risk 1', 'Risk 2'],
+    };
+  },
+  
+  generateDocument: async (type: string, data: any) => {
+    // Mock implementation that returns sample document
+    return `Sample ${type} Document`;
+  },
+  
+  checkRateLimit: () => false, // No rate limiting in local development
+};
 
-export async function generatePrivacyPolicy(prompt: string) {
-  try {
-    const response = await deepseek.chat.completions.create({
-      model: 'deepseek-chat',
-      messages: [{ role: 'user', content: prompt }],
-      temperature: 0.7,
-    });
-    
-    return response.choices[0].message.content;
-  } catch (error) {
-    console.error('AI Generation Error:', error);
-    throw new Error('Failed to generate privacy policy');
-  }
+export async function generatePrivacyPolicy(organization: any, dataProcesses: any[]) {
+  return aiService.generatePrivacyPolicy(organization, dataProcesses);
+}
+
+export async function analyzeCompliance(organization: any, dataProcesses: any[]) {
+  return aiService.analyzeCompliance(organization, dataProcesses);
+}
+
+export async function generateDocument(type: string, data: any) {
+  return aiService.generateDocument(type, data);
+}
+
+export function checkRateLimit() {
+  return aiService.checkRateLimit();
 }
 ```
 
@@ -222,9 +259,10 @@ describe('Policies API', () => {
 ## Security
 
 ### Authentication
-- Use NextAuth.js with Supabase adapter
-- Implement proper session management
-- Validate permissions for all actions
+- Use custom mock authentication for local development
+- Implement proper session management (mocked)
+- Validate permissions for all actions (mocked)
+- Always allow access in local development mode
 
 ### Data Validation
 - Validate all user inputs
@@ -307,8 +345,10 @@ export function Button({ children, variant = 'primary', onClick }: ButtonProps) 
 - Use environment-specific .env files
 - Document all environment variables
 - Use Vercel environment variables for production
+- Local development requires no environment variables
 
 ### CI/CD
 - Automated testing on pull requests
 - Deploy previews for feature branches
 - Production deployment on main branch
+- Local development testing with npm run test
