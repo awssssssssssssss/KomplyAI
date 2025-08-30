@@ -15,7 +15,9 @@ export async function GET(request: Request) {
 
     const { searchParams } = new URL(request.url);
     const organizationId = searchParams.get('organizationId');
-    
+    const searchTerm = searchParams.get('search') || '';
+    const statusFilter = searchParams.get('status') || 'all';
+
     if (!organizationId) {
       return NextResponse.json({ error: 'Organization ID is required' }, { status: 400 });
     }
@@ -26,7 +28,21 @@ export async function GET(request: Request) {
       return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
     }
 
-    const sources = await getDataSources(organizationId);
+    let sources = await getDataSources(organizationId);
+    
+    // Apply search filter
+    if (searchTerm) {
+      sources = sources.filter(source => 
+        source.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        source.type.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+    }
+    
+    // Apply status filter
+    if (statusFilter !== 'all') {
+      sources = sources.filter(source => source.status === statusFilter);
+    }
+    
     return NextResponse.json(sources);
   } catch (error) {
     console.error('Error fetching data sources:', error);

@@ -15,6 +15,8 @@ export async function GET(request: Request) {
 
     const { searchParams } = new URL(request.url);
     const organizationId = searchParams.get('organizationId');
+    const searchTerm = searchParams.get('search') || '';
+    const categoryFilter = searchParams.get('category') || 'all';
     const dataSourceId = searchParams.get('dataSourceId');
     
     if (!organizationId) {
@@ -27,18 +29,30 @@ export async function GET(request: Request) {
       return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
     }
 
-    let assets;
+    let assets = await getDataAssets(organizationId);
+    
+    // Apply search filter
+    if (searchTerm) {
+      assets = assets.filter(asset => 
+        asset.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        asset.type.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+    }
+    
+    // Apply category filter
+    if (categoryFilter !== 'all') {
+      assets = assets.filter(asset => asset.category === categoryFilter);
+    }
+    
+    // If dataSourceId is provided, filter by it
     if (dataSourceId) {
-      // For mock data, we'll just return all assets since we don't have proper filtering
-      assets = await getDataAssets(organizationId);
-    } else {
-      assets = await getDataAssets(organizationId);
+      assets = assets.filter(asset => asset.data_source_id === dataSourceId);
     }
     
     return NextResponse.json(assets);
   } catch (error) {
     console.error('Error fetching data assets:', error);
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+    return NextResponse.json({ error: 'Failed to fetch data assets' }, { status: 500 });
   }
 }
 

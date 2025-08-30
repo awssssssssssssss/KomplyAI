@@ -15,6 +15,7 @@ export async function GET(request: Request) {
 
     const { searchParams } = new URL(request.url);
     const organizationId = searchParams.get('organizationId');
+    const searchTerm = searchParams.get('search') || '';
     const sourceAssetId = searchParams.get('sourceAssetId');
     const destinationAssetId = searchParams.get('destinationAssetId');
     const graph = searchParams.get('graph') === 'true';
@@ -35,15 +36,25 @@ export async function GET(request: Request) {
       return NextResponse.json(graphData);
     }
 
-    let flows;
+    let flows = await getDataFlows(organizationId);
+    
+    // Apply search filter
+    if (searchTerm) {
+      flows = flows.filter(flow => 
+        flow.purpose?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        flow.frequency?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        flow.transfer_method?.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+    }
+    
+    // Filter by source asset if provided
     if (sourceAssetId) {
-      // For mock data, we'll just return all flows since we don't have proper filtering
-      flows = await getDataFlows(organizationId);
-    } else if (destinationAssetId) {
-      // For mock data, we'll just return all flows since we don't have proper filtering
-      flows = await getDataFlows(organizationId);
-    } else {
-      flows = await getDataFlows(organizationId);
+      flows = flows.filter(flow => flow.source_asset_id === sourceAssetId);
+    }
+    
+    // Filter by destination asset if provided
+    if (destinationAssetId) {
+      flows = flows.filter(flow => flow.destination_asset_id === destinationAssetId);
     }
     
     return NextResponse.json(flows);

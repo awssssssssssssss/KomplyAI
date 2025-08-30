@@ -1,9 +1,9 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useSession } from 'next-auth/react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { FiDatabase, FiFile, FiArrowRight, FiRefreshCw, FiPlus, FiEdit, FiTrash2, FiFilter, FiSearch } from 'react-icons/fi';
+import { FiDatabase, FiFile, FiArrowRight, FiRefreshCw, FiPlus, FiEdit, FiTrash2, FiFilter, FiSearch, FiGitBranch } from 'react-icons/fi';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, Legend } from 'recharts';
 
 export default function DataInventoryDashboard() {
@@ -56,6 +56,32 @@ export default function DataInventoryDashboard() {
   
   const COLORS = ['#3b82f6', '#10b981', '#f59e0b', '#8b5cf6', '#ef4444'];
   
+  const fetchData = useCallback(async (orgId: string) => {
+    try {
+      setLoading(true);
+      
+      // Fetch data sources with search and filter params
+      const sourcesRes = await fetch(`/api/data-inventory/sources?organizationId=${orgId}&search=${encodeURIComponent(searchTerm)}&status=${filterStatus}`);
+      const sources = await sourcesRes.json();
+      setDataSources(sources);
+      
+      // Fetch data assets with search and filter params
+      const assetsRes = await fetch(`/api/data-inventory/assets?organizationId=${orgId}&search=${encodeURIComponent(searchTerm)}&category=${filterStatus}`);
+      const assets = await assetsRes.json();
+      setDataAssets(assets);
+      
+      // Fetch data flows with search and filter params
+      const flowsRes = await fetch(`/api/data-inventory/flows?organizationId=${orgId}&search=${encodeURIComponent(searchTerm)}&frequency=${filterStatus}`);
+      const flows = await flowsRes.json();
+      setDataFlows(flows);
+      
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    } finally {
+      setLoading(false);
+    }
+  }, [searchTerm, filterStatus]);
+  
   useEffect(() => {
     if (status === 'loading') return;
     
@@ -70,33 +96,14 @@ export default function DataInventoryDashboard() {
     
     // Fetch data
     fetchData(orgId);
-  }, [session, status, router, searchParams]);
+  }, [session, status, router, searchParams, fetchData]);
   
-  const fetchData = async (orgId: string) => {
-    try {
-      setLoading(true);
-      
-      // Fetch data sources
-      const sourcesRes = await fetch(`/api/data-inventory/sources?organizationId=${orgId}`);
-      const sources = await sourcesRes.json();
-      setDataSources(sources);
-      
-      // Fetch data assets
-      const assetsRes = await fetch(`/api/data-inventory/assets?organizationId=${orgId}`);
-      const assets = await assetsRes.json();
-      setDataAssets(assets);
-      
-      // Fetch data flows
-      const flowsRes = await fetch(`/api/data-inventory/flows?organizationId=${orgId}`);
-      const flows = await flowsRes.json();
-      setDataFlows(flows);
-      
-    } catch (error) {
-      console.error('Error fetching data:', error);
-    } finally {
-      setLoading(false);
+  // Refetch data when search term or filter changes
+  useEffect(() => {
+    if (organizationId) {
+      fetchData(organizationId);
     }
-  };
+  }, [searchTerm, filterStatus, organizationId, fetchData]);
   
   const handleRefresh = async () => {
     setIsRefreshing(true);
@@ -306,10 +313,36 @@ export default function DataInventoryDashboard() {
           
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
             <div className="bg-white rounded-xl shadow-sm border border-gray-100">
-              <div className="px-6 py-4 border-b border-gray-100 flex items-center justify-between">
+              <div className="px-6 py-4 border-b border-gray-100 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <h2 className="text-lg font-semibold text-gray-800 flex items-center">
-                  <FiArrowRight className="mr-2 text-purple-500" /> Data Flows by Type
+                  <FiGitBranch className="mr-2 text-purple-500" /> Data Flows
                 </h2>
+                <div className="flex flex-col sm:flex-row gap-2">
+                  <div className="relative">
+                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                      <FiSearch className="text-gray-400" />
+                    </div>
+                    <input
+                      type="text"
+                      placeholder="Search flows..."
+                      className="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 w-full sm:w-64"
+                      value={searchTerm}
+                      onChange={(e) => setSearchTerm(e.target.value)}
+                    />
+                  </div>
+                  <select
+                    className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    value={filterStatus}
+                    onChange={(e) => setFilterStatus(e.target.value)}
+                  >
+                    <option value="all">All Frequencies</option>
+                    <option value="real_time">Real-time</option>
+                    <option value="hourly">Hourly</option>
+                    <option value="daily">Daily</option>
+                    <option value="weekly">Weekly</option>
+                    <option value="monthly">Monthly</option>
+                  </select>
+                </div>
               </div>
               <div className="p-6 h-80">
                 <ResponsiveContainer width="100%" height="100%">
@@ -401,13 +434,34 @@ export default function DataInventoryDashboard() {
           
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
             <div className="bg-white rounded-xl shadow-sm border border-gray-100">
-              <div className="px-6 py-4 border-b border-gray-100 flex items-center justify-between">
+              <div className="px-6 py-4 border-b border-gray-100 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <h2 className="text-lg font-semibold text-gray-800 flex items-center">
                   <FiDatabase className="mr-2 text-blue-500" /> Data Sources
                 </h2>
-                <button className="text-sm text-blue-600 hover:text-blue-800 flex items-center">
-                  View All
-                </button>
+                <div className="flex flex-col sm:flex-row gap-2">
+                  <div className="relative">
+                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                      <FiSearch className="text-gray-400" />
+                    </div>
+                    <input
+                      type="text"
+                      placeholder="Search sources..."
+                      className="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 w-full sm:w-64"
+                      value={searchTerm}
+                      onChange={(e) => setSearchTerm(e.target.value)}
+                    />
+                  </div>
+                  <select
+                    className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    value={filterStatus}
+                    onChange={(e) => setFilterStatus(e.target.value)}
+                  >
+                    <option value="all">All Statuses</option>
+                    <option value="active">Active</option>
+                    <option value="inactive">Inactive</option>
+                    <option value="error">Error</option>
+                  </select>
+                </div>
               </div>
               <div className="p-6">
                 {dataSources.length > 0 ? (
@@ -468,13 +522,35 @@ export default function DataInventoryDashboard() {
             </div>
             
             <div className="bg-white rounded-xl shadow-sm border border-gray-100">
-              <div className="px-6 py-4 border-b border-gray-100 flex items-center justify-between">
+              <div className="px-6 py-4 border-b border-gray-100 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <h2 className="text-lg font-semibold text-gray-800 flex items-center">
                   <FiFile className="mr-2 text-green-500" /> Recent Data Assets
                 </h2>
-                <button className="text-sm text-blue-600 hover:text-blue-800 flex items-center">
-                  View All
-                </button>
+                <div className="flex flex-col sm:flex-row gap-2">
+                  <div className="relative">
+                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                      <FiSearch className="text-gray-400" />
+                    </div>
+                    <input
+                      type="text"
+                      placeholder="Search assets..."
+                      className="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 w-full sm:w-64"
+                      value={searchTerm}
+                      onChange={(e) => setSearchTerm(e.target.value)}
+                    />
+                  </div>
+                  <select
+                    className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    value={filterStatus}
+                    onChange={(e) => setFilterStatus(e.target.value)}
+                  >
+                    <option value="all">All Categories</option>
+                    <option value="personal">Personal</option>
+                    <option value="financial">Financial</option>
+                    <option value="sensitive">Sensitive</option>
+                    <option value="other">Other</option>
+                  </select>
+                </div>
               </div>
               <div className="p-6">
                 {dataAssets.length > 0 ? (
