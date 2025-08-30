@@ -14,12 +14,30 @@ export const supabase = {
           single: async () => ({
             data: getMockData(table, column, value, column2, value2),
             error: null
+          }),
+          order: (column: string, options: { ascending: boolean }) => ({
+            single: async () => ({
+              data: getMockData(table, column, value, column2, value2),
+              error: null
+            })
+          })
+        }),
+        order: (column: string, options: { ascending: boolean }) => ({
+          single: async () => ({
+            data: getMockData(table, column, value),
+            error: null
           })
         })
       }),
       single: async () => ({
         data: getMockData(table),
         error: null
+      }),
+      order: (column: string, options: { ascending: boolean }) => ({
+        single: async () => ({
+          data: getMockData(table),
+          error: null
+        })
       })
     }),
     insert: (data: any) => ({
@@ -32,6 +50,11 @@ export const supabase = {
     })
   })
 };
+
+// Export a createClient function that returns the mock supabase client
+export function createClient() {
+  return supabase;
+}
 
 // Helper function to generate mock data based on table and query
 function getMockData(table: string, column1?: string, value1?: any, column2?: string, value2?: any) {

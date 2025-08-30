@@ -17,4 +17,5 @@ module.exports = {
     '!lib/**/*.d.ts',
     '!app/**/*.d.ts',
   ],
+  setupFiles: ['<rootDir>/tests/setup.ts'],
 };

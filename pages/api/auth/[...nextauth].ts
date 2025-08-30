@@ -1,20 +1,21 @@
-import { getServerSession as nextAuthGetServerSession } from "next-auth";
+import NextAuth from "next-auth";
 import type { NextAuthOptions } from "next-auth";
 import GithubProvider from "next-auth/providers/github";
 import GoogleProvider from "next-auth/providers/google";
 import CredentialsProvider from "next-auth/providers/credentials";
+import { SupabaseAdapter } from "@next-auth/supabase-adapter";
 
-// Configure NextAuth options for testing/mock purposes
+// Configure NextAuth
 export const authOptions: NextAuthOptions = {
   // Configure authentication providers
   providers: [
     GithubProvider({
-      clientId: process.env.GITHUB_ID || "test-github-id",
-      clientSecret: process.env.GITHUB_SECRET || "test-github-secret",
+      clientId: process.env.GITHUB_ID!,
+      clientSecret: process.env.GITHUB_SECRET!,
     }),
     GoogleProvider({
-      clientId: process.env.GOOGLE_CLIENT_ID || "test-google-id",
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET || "test-google-secret",
+      clientId: process.env.GOOGLE_CLIENT_ID!,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
     }),
     CredentialsProvider({
       name: "Credentials",
@@ -40,6 +41,11 @@ export const authOptions: NextAuthOptions = {
       }
     })
   ],
+  // Configure Supabase adapter
+  adapter: SupabaseAdapter({
+    url: process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    secret: process.env.SUPABASE_SERVICE_ROLE_KEY!,
+  }),
   // Configure session
   session: {
     strategy: "jwt",
@@ -67,36 +73,4 @@ export const authOptions: NextAuthOptions = {
   },
 };
 
-export async function getCurrentUser() {
-  const session = await nextAuthGetServerSession(authOptions);
-  return session?.user || null;
-}
-
-export async function requireUser() {
-  const user = await getCurrentUser();
-  return !!user;
-}
-
-export async function requireOrganizationAccess(organizationId: string) {
-  const user = await getCurrentUser();
-  if (!user) return false;
-  
-  // In a real implementation, you would check if the user has access to the organization
-  // For now, we'll just return true if the user is authenticated
-  return true;
-}
-
-export async function validateOrganizationAccess(userEmail: string, organizationId: string) {
-  // In a real implementation, you would check if the user has access to the organization
-  // For now, we'll just return true for mock/testing purposes
-  return true;
-}
-
-export async function checkRateLimit(key: string) {
-  // We'll implement rate limiting later
-  return true;
-}
-
-export async function getServerSession() {
-  return await nextAuthGetServerSession(authOptions);
-}
+export default NextAuth(authOptions);

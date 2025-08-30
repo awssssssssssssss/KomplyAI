@@ -5,19 +5,65 @@ AI-powered DSGVO (GDPR) compliance tool for German SMEs.
 
 ## Features
 
-- AI-powered privacy policy generation
-- Automated compliance assessments
-- Data processing activity management
-- Audit trail and logging
-- Multi-organization support
-- User authentication and authorization
+### Core MVP Features
+
+#### 1. Data Mapping and Discovery
+- Automated data inventory to classify and track sensitive data
+- Real-time data mapping to understand data flows
+- Identification of personal data collection, processing, and storage points
+
+#### 2. Consent Management System
+- Cookie consent management for GDPR, CCPA, and other regional laws
+- Customizable consent banners and preference centers
+- Geolocation-specific consent management for multi-region compliance
+- Audit trails for consent records
+
+#### 3. Data Subject Request (DSR) Automation
+- Self-service portal for users to manage their data rights
+- Automated handling of data access, correction, deletion, and portability requests
+- Compliance with regulatory response timelines (e.g., 30 days for GDPR)
+
+#### 4. Privacy Policy Generation
+- AI-powered generation of compliant privacy policies
+- Customization based on organization details and data processing activities
+- Support for multiple regulations (GDPR, CCPA, etc.)
+
+#### 5. Data Security Measures
+- Strong encryption for data in transit and at rest
+- Access controls and authentication mechanisms
+- Regular security audits and vulnerability assessments
+
+#### 6. Data Breach Management
+- Breach detection and response systems
+- Automated notification procedures for authorities and affected individuals
+- Incident response workflows with documentation
+
+#### 7. Third-Party Vendor Management
+- Assessment and monitoring of third-party data processors
+- Management of Data Processing Agreements (DPAs)
+- Vendor risk assessment tools
+
+#### 8. Compliance Documentation and Reporting
+- Automated generation of compliance reports
+- Documentation of processing activities
+- Privacy Impact Assessments (PIAs/DPIAs) templates and workflows
+
+#### 9. User Dashboard and Administration
+- Centralized dashboard for monitoring compliance status
+- Role-based access control for different user types
+- Audit logs for all compliance-related activities
+
+#### 10. Multi-Regulation Support
+- Built-in templates and workflows for major privacy regulations
+- Geolocation and multi-language support
+- Automatic updates for changing regulations
 
 ## Technology Stack
 
 - **Frontend**: Next.js 14, TypeScript, Tailwind CSS
 - **Backend**: Next.js API Routes
 - **Database**: Supabase (PostgreSQL) - Mocked for local development
-- **Authentication**: Custom mock authentication for local development
+- **Authentication**: NextAuth.js with Supabase adapter and OAuth providers (GitHub, Google)
 - **AI Services**: Mock AI services for local development
 - **Rate Limiting**: Upstash Redis (disabled for local development)
 - **Testing**: Jest
