@@ -21,7 +21,7 @@ export async function GET(request: Request) {
     }
 
     // Validate organization access
-    const hasAccess = await validateOrganizationAccess(session.user.email, organizationId);
+    const hasAccess = await validateOrganizationAccess(session.user?.email || '', organizationId);
     if (!hasAccess) {
       return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
     }
@@ -49,7 +49,7 @@ export async function POST(request: Request) {
     }
 
     // Validate organization access
-    const hasAccess = await validateOrganizationAccess(session.user.email, organizationId);
+    const hasAccess = await validateOrganizationAccess(session.user?.email || '', organizationId);
     if (!hasAccess) {
       return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
     }
@@ -77,7 +77,7 @@ export async function PUT(request: Request) {
     }
 
     // Validate organization access
-    const hasAccess = await validateOrganizationAccess(session.user.email, organizationId);
+    const hasAccess = await validateOrganizationAccess(session.user?.email || '', organizationId);
     if (!hasAccess) {
       return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
     }
@@ -106,7 +106,7 @@ export async function DELETE(request: Request) {
     }
 
     // Validate organization access
-    const hasAccess = await validateOrganizationAccess(session.user.email, organizationId);
+    const hasAccess = await validateOrganizationAccess(session.user?.email || '', organizationId);
     if (!hasAccess) {
       return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
     }
