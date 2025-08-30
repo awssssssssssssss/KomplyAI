@@ -141,6 +141,86 @@ function getMockData(table: string, column1?: string, value1?: any, column2?: st
         ip_address: '127.0.0.1',
         user_agent: 'Test Agent'
       };
+    case 'data_sources':
+      // Return mock data sources
+      return [
+        {
+          id: 'mock-source-1',
+          organization_id: value1 || 'mock-org-id',
+          name: 'Customer Database',
+          type: 'database',
+          status: 'active',
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString()
+        },
+        {
+          id: 'mock-source-2',
+          organization_id: value1 || 'mock-org-id',
+          name: 'User Files',
+          type: 'file_system',
+          status: 'active',
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString()
+        }
+      ];
+    case 'data_assets':
+      // Return mock data assets
+      return [
+        {
+          id: 'mock-asset-1',
+          organization_id: value1 || 'mock-org-id',
+          data_source_id: 'mock-source-1',
+          name: 'Customer Table',
+          type: 'table',
+          category: 'personal',
+          description: 'Contains customer personal information',
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString()
+        },
+        {
+          id: 'mock-asset-2',
+          organization_id: value1 || 'mock-org-id',
+          data_source_id: 'mock-source-1',
+          name: 'Order Table',
+          type: 'table',
+          category: 'financial',
+          description: 'Contains order and payment information',
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString()
+        }
+      ];
+    case 'data_classifications':
+      // Return mock data classifications
+      return [
+        {
+          id: 'mock-classification-1',
+          organization_id: value1 || 'mock-org-id',
+          data_asset_id: 'mock-asset-1',
+          classification_type: 'pii',
+          confidence_score: 0.95,
+          detected_fields: { name: 'high', email: 'high', phone: 'medium' },
+          reviewed: true,
+          reviewed_by: 'test@example.com',
+          reviewed_at: new Date().toISOString(),
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString()
+        }
+      ];
+    case 'data_flows':
+      // Return mock data flows
+      return [
+        {
+          id: 'mock-flow-1',
+          organization_id: value1 || 'mock-org-id',
+          source_asset_id: 'mock-asset-1',
+          destination_asset_id: 'mock-asset-2',
+          purpose: 'Data synchronization',
+          frequency: 'daily',
+          transfer_method: 'database_sync',
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString()
+        }
+      ];
     default:
       return {};
   }
