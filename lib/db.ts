@@ -47,6 +47,26 @@ export const supabase = {
           error: null
         })
       })
+    }),
+    update: (data: any) => ({
+      eq: (column: string, value: any) => ({
+        select: () => ({
+          single: async () => ({
+            data: { ...data, id: 'mock-id' },
+            error: null
+          })
+        })
+      })
+    }),
+    delete: () => ({
+      eq: (column: string, value: any) => ({
+        select: () => ({
+          single: async () => ({
+            data: null,
+            error: null
+          })
+        })
+      })
     })
   })
 };
