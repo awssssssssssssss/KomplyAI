@@ -2,7 +2,7 @@
 import React from 'react';
 import './globals.css';
 import type { Metadata } from 'next';
-import { SessionProvider } from 'next-auth/react';
+import ClientProviders from '@/app/components/layout/ClientProviders';
 
 export const metadata: Metadata = {
   title: 'X-Komply-AI | DSGVO Compliance for German SMEs',
@@ -17,7 +17,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        <SessionProvider>
+        <ClientProviders>
           <header className="bg-white dark:bg-gray-900 shadow-sm">
             <div className="container mx-auto px-4 py-4 flex justify-between items-center">
               <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
@@ -59,7 +59,7 @@ export default function RootLayout({
               <p>© {new Date().getFullYear()} X-Komply-AI. DSGVO Compliance Tool for German SMEs.</p>
             </div>
           </footer>
-        </SessionProvider>
+        </ClientProviders>
       </body>
     </html>
   );
