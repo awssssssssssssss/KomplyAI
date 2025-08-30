@@ -66,7 +66,7 @@ export async function classifyDataAsset(asset: Partial<DataAsset>): Promise<Part
   // In a real implementation, this would use AI/ML models to classify data
   
   // Simple rule-based classification for demo
-  let classificationType = 'other';
+  let classificationType: DataClassification['classification_type'] = 'other';
   let confidenceScore = 0.5;
   let detectedFields: Record<string, any> = {};
   
