@@ -217,6 +217,8 @@ export default function DataInventoryDashboard() {
                   <p className="text-2xl font-semibold text-gray-900">{dataAssets.length}</p>
                 </div>
               </div>
+              <div className="mt-3 flex flex-wrap items-center text-sm gap-2">
+                <span className="text-blue-600 font-medium">{dataAssets.filter(a => a.category === 'personal').length} personal</span>
                 <span className="text-gray-300">•</span>
                 <span className="text-yellow-600 font-medium">{dataAssets.filter(a => a.category === 'financial').length} financial</span>
               </div>
